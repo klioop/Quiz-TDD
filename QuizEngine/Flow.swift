@@ -30,9 +30,8 @@ class Flow {
                 let firstQuestionIdx = self.questions.firstIndex(of: firstQuestion)!
                 let nextQuestionIdx = firstQuestionIdx + 1
                 let nextQuestion = self.questions[nextQuestionIdx]
-                self.router.routeTo(question: nextQuestion) { _ in
-                    
-                }
+                
+                self.router.routeTo(question: nextQuestion) { _ in }
             }
         }
     }

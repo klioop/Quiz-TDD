@@ -14,44 +14,34 @@ import XCTest
 
 class Flowtest: XCTestCase {
     
+    let router = RouterSpy()
+    
     func test_start_withNoQuestions_doesNotRouteToQuestion() {
-        let router = RouterSpy()
-        let sut = Flow(questions: [] ,router: router)
-        sut.start()
+        makeSUT(questions: [])
         
         XCTAssertTrue(router.routedQuestions.isEmpty)
     }
     
     func test_start_withOneQuestions_routeToCorrectQuestion() {
-        let router = RouterSpy()
-        let sut = Flow(questions: ["Q1"] ,router: router)
-        
-        sut.start()
+        makeSUT(questions: ["Q1"]).start()
         
         XCTAssertEqual(router.routedQuestions, ["Q1"])
     }
     
     func test_start_withOneQuestions_routeToCorrectQuestion_2() {
-        let router = RouterSpy()
-        let sut = Flow(questions: ["Q2"] ,router: router)
-        
-        sut.start()
+        makeSUT(questions: ["Q2"]).start()
         
         XCTAssertEqual(router.routedQuestions, ["Q2"])
     }
     
     func test_start_withTwoQuestions_routeToCorrectQuestion() {
-        let router = RouterSpy()
-        let sut = Flow(questions: ["Q1", "Q2"] ,router: router)
-        
-        sut.start()
+        makeSUT(questions: ["Q1", "Q2"]).start()
         
         XCTAssertEqual(router.routedQuestions, ["Q1"])
     }
     
     func test_startTwice_withTwoQuestions_routeToCorrectQuestion() {
-        let router = RouterSpy()
-        let sut = Flow(questions: ["Q1", "Q2"] ,router: router)
+        let sut = makeSUT(questions: ["Q1", "Q2"])
         
         sut.start()
         sut.start()
@@ -60,13 +50,19 @@ class Flowtest: XCTestCase {
     }
     
     func test_startAndAnswerFirstQuestion_withTwoQuestions_routeToSecondQuestion() {
-        let router = RouterSpy()
-        let sut = Flow(questions: ["Q1", "Q2"] ,router: router)
+        let sut = makeSUT(questions: ["Q1", "Q2"])
         
         sut.start()
         router.answerCallBack("A1")
         
         XCTAssertEqual(router.routedQuestions, ["Q1", "Q2"])
+    }
+    
+    // MARK: - helpers
+    
+    @discardableResult
+    func makeSUT(questions: [String]) -> Flow {
+        Flow(questions: questions, router: router)
     }
     
     class RouterSpy: Router {
