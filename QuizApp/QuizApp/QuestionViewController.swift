@@ -9,18 +9,21 @@ import UIKit
 import PinLayout
 
 
-class QuestionViewController: UIViewController, UITableViewDataSource {
+class QuestionViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let headerLabel = UILabel()
     let tableView = UITableView()
     
-    private var question: String = ""
-    private var options: [String] = []
+    private var question = ""
+    private var options = [String]()
+    private var selection: ((String) -> Void)? = nil
+    private let reuseIdentifier = "cell"
     
     override func viewDidLoad() {
         [headerLabel, tableView].forEach { view.addSubview($0) }
         headerLabel.text = question
         tableView.dataSource = self
+        tableView.delegate = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -28,10 +31,15 @@ class QuestionViewController: UIViewController, UITableViewDataSource {
         headerLabel.pin.top(view.pin.safeArea).hCenter()
     }
     
-    convenience init(question: String, options: [String]) {
+    convenience init(
+        question: String,
+        options: [String],
+        selection: @escaping (String) -> Void
+    ) {
         self.init()
         self.question = question
         self.options = options
+        self.selection = selection
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -39,9 +47,20 @@ class QuestionViewController: UIViewController, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = dequeue(in: tableView)
         cell.textLabel?.text = options[indexPath.row]
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selection?(options[indexPath.row])
+    }
+    
+    
+    private func dequeue(in tableView: UITableView) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
+            return cell
+        }
+        return UITableViewCell(style: .default, reuseIdentifier: reuseIdentifier)
+    }
 }
