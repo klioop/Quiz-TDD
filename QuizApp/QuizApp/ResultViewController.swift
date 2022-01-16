@@ -16,6 +16,7 @@ struct PresentableAnswer {
 
 
 class CorrectAnswerCell: UITableViewCell {
+    
     let questionLabel = UILabel()
     let answerLabel = UILabel()
     
@@ -33,6 +34,18 @@ class CorrectAnswerCell: UITableViewCell {
 
 class WrongAnswerCell: UITableViewCell {
     
+    let questionLabel = UILabel()
+    let correctAnswerLabel = UILabel()
+    
+    convenience init() {
+        self.init()
+        [questionLabel, correctAnswerLabel].forEach { contentView.addSubview($0) }
+    }
+    
+    func configure(with answer: PresentableAnswer) {
+        questionLabel.text = answer.question
+        correctAnswerLabel.text = answer.answer
+    }
 }
 
 
@@ -68,14 +81,29 @@ class ResultViewController: UIViewController, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let answer = answers[indexPath.row]
         if answer.isCorrect {
-            let cell = tableView.dequeueReusableCell(withIdentifier: CorrectAnswerCell.reuseIdentifier) as! CorrectAnswerCell
-            cell.configure(with: answer)
-            return cell
+            return correctAnswerCell(for: answer)
         }
-        return tableView.dequeueReusableCell(withIdentifier: WrongAnswerCell.reuseIdentifier) as! WrongAnswerCell
+        return wrongAnswerCell(for: answer)
     }
     
 }
+
+// MARK: - helpers
+
+private extension ResultViewController {
+    func correctAnswerCell(for answer: PresentableAnswer) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CorrectAnswerCell.reuseIdentifier) as! CorrectAnswerCell
+        cell.configure(with: answer)
+        return cell
+    }
+    
+    func wrongAnswerCell(for answer: PresentableAnswer) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: WrongAnswerCell.reuseIdentifier) as! WrongAnswerCell
+        cell.configure(with: answer)
+        return cell
+    }
+}
+
 
 extension UITableViewCell {
     static var reuseIdentifier: String {
