@@ -9,9 +9,9 @@ import UIKit
 
 
 struct PresentableAnswer {
-    let isCorrect: Bool
     let question: String
     let answer: String
+    var wrongAnswer: String?
 }
 
 
@@ -36,15 +36,17 @@ class WrongAnswerCell: UITableViewCell {
     
     let questionLabel = UILabel()
     let correctAnswerLabel = UILabel()
+    let wrongAnswerLabel = UILabel()
     
     convenience init() {
         self.init()
-        [questionLabel, correctAnswerLabel].forEach { contentView.addSubview($0) }
+        [questionLabel, correctAnswerLabel, wrongAnswerLabel].forEach { contentView.addSubview($0) }
     }
     
     func configure(with answer: PresentableAnswer) {
         questionLabel.text = answer.question
         correctAnswerLabel.text = answer.answer
+        wrongAnswerLabel.text = answer.wrongAnswer
     }
 }
 
@@ -80,7 +82,7 @@ class ResultViewController: UIViewController, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let answer = answers[indexPath.row]
-        if answer.isCorrect {
+        if answer.wrongAnswer == nil {
             return correctAnswerCell(for: answer)
         }
         return wrongAnswerCell(for: answer)
