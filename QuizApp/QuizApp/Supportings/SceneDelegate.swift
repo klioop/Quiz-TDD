@@ -15,13 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        let vc = QuestionViewController(
-            question: "Q1",
-            options: ["option1", "option2"]
-        ) {
-            print($0)
-        }
-        vc.tableView.allowsMultipleSelection = false
+        let vc = ResultViewController(summary: "You got 1/2 Answer", answers: [
+            PresentableAnswer(question: "Questions1,Questions1 Questions1 Questions1 Questions1 ", answer: "Hello!!", wrongAnswer: nil),
+            PresentableAnswer(question: "Questions2", answer: "TDD, Horay!!", wrongAnswer: "You Love TDD")
+        ])
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
     }

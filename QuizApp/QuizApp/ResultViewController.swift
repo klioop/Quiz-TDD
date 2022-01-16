@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PinLayout
 
 
 struct PresentableAnswer {
@@ -15,46 +16,14 @@ struct PresentableAnswer {
 }
 
 
-class CorrectAnswerCell: UITableViewCell {
-    
-    let questionLabel = UILabel()
-    let answerLabel = UILabel()
-    
-    convenience init() {
-        self.init()
-        [questionLabel, answerLabel].forEach { contentView.addSubview($0) }
-    }
-    
-    func configure(with answer: PresentableAnswer) {
-        questionLabel.text = answer.question
-        answerLabel.text = answer.answer
-    }
-}
 
-
-class WrongAnswerCell: UITableViewCell {
+class ResultViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    let questionLabel = UILabel()
-    let correctAnswerLabel = UILabel()
-    let wrongAnswerLabel = UILabel()
-    
-    convenience init() {
-        self.init()
-        [questionLabel, correctAnswerLabel, wrongAnswerLabel].forEach { contentView.addSubview($0) }
-    }
-    
-    func configure(with answer: PresentableAnswer) {
-        questionLabel.text = answer.question
-        correctAnswerLabel.text = answer.answer
-        wrongAnswerLabel.text = answer.wrongAnswer
-    }
-}
-
-
-
-class ResultViewController: UIViewController, UITableViewDataSource {
-    
-    let headerLabel = UILabel()
+    let headerLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        return label
+    }()
     let tableView = UITableView()
     
     private var summary = ""
@@ -62,12 +31,21 @@ class ResultViewController: UIViewController, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         [headerLabel, tableView].forEach { view.addSubview($0) }
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(type: CorrectAnswerCell.self)
         tableView.register(type: WrongAnswerCell.self)
+        tableView.tableHeaderView = headerLabel
         
         headerLabel.text = summary
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        headerLabel.pin.height(44)
+        tableView.pin.all(view.pin.safeArea)
     }
     
     convenience init(summary: String, answers: [PresentableAnswer]) {
@@ -88,6 +66,14 @@ class ResultViewController: UIViewController, UITableViewDataSource {
         return wrongAnswerCell(for: answer)
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        answers[indexPath.row].wrongAnswer == nil ? 50 : 70
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
 }
 
 // MARK: - helpers
@@ -103,23 +89,5 @@ private extension ResultViewController {
         let cell = tableView.dequeueReusableCell(WrongAnswerCell.self)!
         cell.configure(with: answer)
         return cell
-    }
-}
-
-extension UITableView {
-    func register(type: UITableViewCell.Type) {
-        let className = type.reuseIdentifier
-        register(type, forCellReuseIdentifier: className)
-    }
-    
-    func dequeueReusableCell<T: UITableViewCell>(_ type: T.Type) -> T? {
-        let className = type.reuseIdentifier
-        return dequeueReusableCell(withIdentifier: className) as? T
-    }
-}
-
-extension UITableViewCell {
-    static var reuseIdentifier: String {
-        String(describing: self)
     }
 }
