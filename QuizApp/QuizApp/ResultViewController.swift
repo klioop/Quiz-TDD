@@ -9,12 +9,27 @@ import UIKit
 
 
 struct PresentableAnswer {
-    var isCorrect: Bool
+    let isCorrect: Bool
+    let question: String
+    let answer: String
 }
 
+
 class CorrectAnswerCell: UITableViewCell {
+    let questionLabel = UILabel()
+    let answerLabel = UILabel()
     
+    convenience init() {
+        self.init()
+        [questionLabel, answerLabel].forEach { contentView.addSubview($0) }
+    }
+    
+    func configure(with answer: PresentableAnswer) {
+        questionLabel.text = answer.question
+        answerLabel.text = answer.answer
+    }
 }
+
 
 class WrongAnswerCell: UITableViewCell {
     
@@ -34,6 +49,8 @@ class ResultViewController: UIViewController, UITableViewDataSource {
         super.viewDidLoad()
         [headerLabel, tableView].forEach { view.addSubview($0) }
         tableView.dataSource = self
+        tableView.register(CorrectAnswerCell.self, forCellReuseIdentifier: CorrectAnswerCell.reuseIdentifier)
+        tableView.register(WrongAnswerCell.self, forCellReuseIdentifier: WrongAnswerCell.reuseIdentifier)
         
         headerLabel.text = summary
     }
@@ -45,12 +62,23 @@ class ResultViewController: UIViewController, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        answers.count
+        return answers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let answer = answers[indexPath.row]
-        return answer.isCorrect ? CorrectAnswerCell() : WrongAnswerCell()
+        if answer.isCorrect {
+            let cell = tableView.dequeueReusableCell(withIdentifier: CorrectAnswerCell.reuseIdentifier) as! CorrectAnswerCell
+            cell.configure(with: answer)
+            return cell
+        }
+        return tableView.dequeueReusableCell(withIdentifier: WrongAnswerCell.reuseIdentifier) as! WrongAnswerCell
     }
     
+}
+
+extension UITableViewCell {
+    static var reuseIdentifier: String {
+        String(describing: self)
+    }
 }

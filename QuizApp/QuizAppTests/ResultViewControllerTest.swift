@@ -22,15 +22,17 @@ class ResultViewControllerTest: XCTestCase {
         XCTAssertEqual(makeSUT(answers: [makeDummyAnswer()]).tableView.numberOfRows(inSection: 0), 1)
     }
     
-    func test_viewDidLoad_withCorrectAnswer_rensersCorrectAnswer() {
-        let sut = makeSUT(answers: [PresentableAnswer(isCorrect: true)])
-        let cell = sut.tableView.cell(at: 0) as? CorrectAnswerCell
-        
-        XCTAssertNotNil(cell)
+    func test_viewDidLoad_withCorrectAnswer_rensersAnswerText() {
+        let answer = makeAnswer(question: "Q1", answer: "A1", isCorrect: true)
+        let sut = makeSUT(answers: [answer])
+        let cell = sut.tableView.cell(at: 0) as! CorrectAnswerCell
+
+        XCTAssertEqual(cell.questionLabel.text, "Q1")
+        XCTAssertEqual(cell.answerLabel.text, "A1")
     }
     
     func test_viewDidLoad_withWrongAnswer_rensersWrongAnswer() {
-        let sut = makeSUT(answers: [PresentableAnswer(isCorrect: false)])
+        let sut = makeSUT(answers: [makeAnswer(isCorrect: false)])
         let cell = sut.tableView.cell(at: 0) as? WrongAnswerCell
         
         XCTAssertNotNil(cell)
@@ -38,7 +40,10 @@ class ResultViewControllerTest: XCTestCase {
     
     // MARK: - helpers
     
-    func makeSUT(summary: String = "", answers: [PresentableAnswer] = []) -> ResultViewController {
+    func makeSUT(
+        summary: String = "",
+        answers: [PresentableAnswer] = []
+    ) -> ResultViewController {
         let sut = ResultViewController(summary: summary, answers: answers)
         sut.loadViewIfNeeded()
 
@@ -46,7 +51,15 @@ class ResultViewControllerTest: XCTestCase {
     }
     
     func makeDummyAnswer() -> PresentableAnswer {
-        return PresentableAnswer(isCorrect: false)
+        return makeAnswer(isCorrect: false)
+    }
+    
+    func makeAnswer(
+        question: String = "",
+        answer: String = "",
+        isCorrect: Bool
+    ) -> PresentableAnswer {
+        return PresentableAnswer(isCorrect: isCorrect, question: question, answer: answer)
     }
     
 }
