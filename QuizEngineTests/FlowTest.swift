@@ -68,6 +68,35 @@ class Flowtest: XCTestCase {
         XCTAssertEqual(router.routedQuestions, ["Q1"])
     }
     
+    func test_start_withNoQuestions_routesToEmptyResult() {
+        let sut = makeSUT(questions: [])
+        
+        sut.start()
+        
+        XCTAssertEqual(router.routedResult, [:])
+    }
+    
+    func test_startAndAnswer_withOneQuestions_routeToOneResult() {
+        let sut = makeSUT(questions: ["Q1"])
+        
+        sut.start()
+        router.answerCallBack("A1")
+        
+        XCTAssertEqual(router.routedResult!, ["Q1": "A1"])
+    }
+    
+    func test_startAndAnswer_withTwoQuestions_routeToResult() {
+        let sut = makeSUT(questions: ["Q1", "Q2"])
+        
+        sut.start()
+        router.answerCallBack("A1")
+        router.answerCallBack("A2")
+        
+        XCTAssertEqual(router.routedResult, ["Q1": "A1", "Q2": "A2"])
+    }
+    
+    
+    
     // MARK: - helpers
     
     @discardableResult
@@ -78,11 +107,16 @@ class Flowtest: XCTestCase {
     class RouterSpy: Router {
         
         var routedQuestions: [String] = []
+        var routedResult: [String: String]? = nil
         var answerCallBack: Router.AnswerCallBack = { _ in }
         
         func routeTo(question: String, answerCallBack: @escaping Router.AnswerCallBack) {
             routedQuestions.append(question)
             self.answerCallBack = answerCallBack
+        }
+        
+        func routeTo(result: [String : String]) {
+            routedResult = result
         }
     }
 }
