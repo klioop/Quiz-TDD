@@ -16,7 +16,7 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private var question = ""
     private var options = [String]()
-    private var selection: ((String) -> Void)? = nil
+    private var selection: (([String]) -> Void)? = nil
     private let reuseIdentifier = "cell"
     
     override func viewDidLoad() {
@@ -34,7 +34,7 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
     convenience init(
         question: String,
         options: [String],
-        selection: @escaping (String) -> Void
+        selection: @escaping ([String]) -> Void
     ) {
         self.init()
         self.question = question
@@ -53,7 +53,18 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selection?(options[indexPath.row])
+        selection?(optionsSelected(in: tableView))
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        selection?(optionsSelected(in: tableView))
+    }
+    
+    private func optionsSelected(in tableView: UITableView) -> [String] {
+        guard let indexPaths = tableView.indexPathsForSelectedRows else {
+            return []
+        }
+        return indexPaths.map { options[$0.row] }
     }
     
     
