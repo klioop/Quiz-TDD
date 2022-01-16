@@ -64,8 +64,8 @@ class ResultViewController: UIViewController, UITableViewDataSource {
         super.viewDidLoad()
         [headerLabel, tableView].forEach { view.addSubview($0) }
         tableView.dataSource = self
-        tableView.register(CorrectAnswerCell.self, forCellReuseIdentifier: CorrectAnswerCell.reuseIdentifier)
-        tableView.register(WrongAnswerCell.self, forCellReuseIdentifier: WrongAnswerCell.reuseIdentifier)
+        tableView.register(type: CorrectAnswerCell.self)
+        tableView.register(type: WrongAnswerCell.self)
         
         headerLabel.text = summary
     }
@@ -94,18 +94,29 @@ class ResultViewController: UIViewController, UITableViewDataSource {
 
 private extension ResultViewController {
     func correctAnswerCell(for answer: PresentableAnswer) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CorrectAnswerCell.reuseIdentifier) as! CorrectAnswerCell
+        let cell = tableView.dequeueReusableCell(CorrectAnswerCell.self)!
         cell.configure(with: answer)
         return cell
     }
     
     func wrongAnswerCell(for answer: PresentableAnswer) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: WrongAnswerCell.reuseIdentifier) as! WrongAnswerCell
+        let cell = tableView.dequeueReusableCell(WrongAnswerCell.self)!
         cell.configure(with: answer)
         return cell
     }
 }
 
+extension UITableView {
+    func register(type: UITableViewCell.Type) {
+        let className = type.reuseIdentifier
+        register(type, forCellReuseIdentifier: className)
+    }
+    
+    func dequeueReusableCell<T: UITableViewCell>(_ type: T.Type) -> T? {
+        let className = type.reuseIdentifier
+        return dequeueReusableCell(withIdentifier: className) as? T
+    }
+}
 
 extension UITableViewCell {
     static var reuseIdentifier: String {
