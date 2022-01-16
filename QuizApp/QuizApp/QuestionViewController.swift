@@ -11,7 +11,11 @@ import PinLayout
 
 class QuestionViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    let headerLabel = UILabel()
+    let headerLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        return label
+    }()
     let tableView = UITableView()
     
     private var question = ""
@@ -20,15 +24,21 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
     private let reuseIdentifier = "cell"
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         [headerLabel, tableView].forEach { view.addSubview($0) }
         headerLabel.text = question
         tableView.dataSource = self
         tableView.delegate = self
+        
+        tableView.tableHeaderView = headerLabel
+        tableView.rowHeight = 44
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        headerLabel.pin.top(view.pin.safeArea).hCenter()
+        headerLabel.pin.height(44)
+        tableView.pin.all(view.pin.safeArea)
     }
     
     convenience init(
@@ -42,6 +52,7 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
         self.selection = selection
     }
     
+    // dataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return options.count
     }
@@ -52,12 +63,15 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
         return cell
     }
     
+    // delegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selection?(optionsSelected(in: tableView))
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        selection?(optionsSelected(in: tableView))
+        if tableView.allowsMultipleSelection {
+            selection?(optionsSelected(in: tableView))
+        }
     }
     
     private func optionsSelected(in tableView: UITableView) -> [String] {

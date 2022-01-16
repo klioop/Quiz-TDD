@@ -13,7 +13,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(windowScene: windowScene)
+        let vc = QuestionViewController(
+            question: "Q1",
+            options: ["option1", "option2"]
+        ) {
+            print($0)
+        }
+        vc.tableView.allowsMultipleSelection = false
+        window?.rootViewController = vc
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
