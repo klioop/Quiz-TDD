@@ -14,3 +14,4 @@ public protocol Router {
     func routeTo(question: Question, answerCallBack: @escaping (Answer) -> Void)
     func routeTo(result: Result<Question, Answer>)
 }
+
