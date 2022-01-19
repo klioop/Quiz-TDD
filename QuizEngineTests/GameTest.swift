@@ -12,9 +12,11 @@ class GameTest: XCTestCase {
     var game: Game<String, String, RouterSpy>!
     let router = RouterSpy()
     
-    func test_gameStart_zeroCorrectOutOfTwo_scores0() {
+    override func setUp() {
         game = startGame(questions: ["Q1", "Q2"], router: router, correctAnswers: ["Q1": "A1", "Q2": "A2"])
-        
+    }
+    
+    func test_gameStart_zeroCorrectOutOfTwo_scores0() {
         router.answerCallBack("WrongAnswer")
         router.answerCallBack("WrongAnswer")
         
@@ -22,15 +24,18 @@ class GameTest: XCTestCase {
     }
     
     func test_gameStart_correctOneOutOfTwo_scoresOne() {
-        game = startGame(questions: ["Q1", "Q2"], router: router, correctAnswers: ["Q1": "A1", "Q2": "A2"])
-        
         router.answerCallBack("A1")
         router.answerCallBack("WrongAnswer")
         
         XCTAssertEqual(router.routedResult!.score, 1)
     }
-
-
+    
+    func test_gameStart_correctTwoOutOfTwo_scoresTwo() {
+        router.answerCallBack("A1")
+        router.answerCallBack("A2")
+        
+        XCTAssertEqual(router.routedResult!.score, 2)
+    }
     
 }
 
