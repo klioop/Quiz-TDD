@@ -13,7 +13,7 @@ import XCTest
 
 class NavigationControllerRouterTest: XCTestCase {
     
-    let navigationController = UINavigationController()
+    let navigationController = NonAnimatedNavigationController()
     let factory = ViewControllerFactoryStub()
     lazy var sut: NavigationControllerRouter = {
         return NavigationControllerRouter(navigationController: self.navigationController, factory: self.factory )
@@ -30,6 +30,8 @@ class NavigationControllerRouterTest: XCTestCase {
         sut.routeTo(question: "Q1", answerCallBack: { _ in })
         sut.routeTo(question: "Q2", answerCallBack: { _ in })
         
+        // navigationController.viewControllers is only updated after the animation finishes - asynchronous behavior
+        // animation will take 0.3 seconds
         XCTAssertEqual(navigationController.viewControllers.count, 2)
         XCTAssertEqual(navigationController.viewControllers.first, viewController)
         XCTAssertEqual(navigationController.viewControllers.last, secondViewController)
@@ -42,6 +44,13 @@ class NavigationControllerRouterTest: XCTestCase {
         factory.answerCallBack["Q1"]!("Anything")
         
         XCTAssertTrue(callBackWasFired)
+    }
+    
+    // Fake to deal with navigationController's animation asyncronocity
+    class NonAnimatedNavigationController: UINavigationController {
+        override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+            super.pushViewController(viewController, animated: false)
+        }
     }
     
     class ViewControllerFactoryStub: ViewControllerFactory {
