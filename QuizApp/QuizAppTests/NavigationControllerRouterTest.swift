@@ -59,7 +59,6 @@ class NavigationControllerRouterTest: XCTestCase {
         sut.routeTo(result: result)
         sut.routeTo(result: secondResult)
         
-        
         XCTAssertEqual(navigationController.viewControllers.count, 2)
         XCTAssertEqual(navigationController.viewControllers.first, viewController)
         XCTAssertEqual(navigationController.viewControllers.last, secondViewController)
