@@ -12,7 +12,6 @@ protocol ViewControllerFactory {
     func questionViewController(for question: String, answerCallBack: @escaping (String) -> Void) -> UIViewController
 }
 
-
 class NavigationControllerRouter: Router {
     
     private let navigationController: UINavigationController
