@@ -12,6 +12,6 @@ public protocol Router {
     associatedtype Answer
     
     func routeTo(question: Question, answerCallBack: @escaping (Answer) -> Void)
-    func routeTo(result: Result<Question, Answer>)
+    func routeTo(result: ResultOfQuiz<Question, Answer>)
 }
 

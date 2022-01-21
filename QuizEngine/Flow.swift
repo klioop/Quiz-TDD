@@ -48,8 +48,8 @@ class Flow<Question, Answer, R: Router> where R.Question == Question, R.Answer =
         }
     }
     
-    private func result() -> Result<Question, Answer> {
-        return Result(answers: answers, score: scoring(answers))
+    private func result() -> ResultOfQuiz<Question, Answer> {
+        return ResultOfQuiz(answers: answers, score: scoring(answers))
     }
 }
 
