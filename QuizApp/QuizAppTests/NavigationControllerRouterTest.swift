@@ -24,11 +24,11 @@ class NavigationControllerRouterTest: XCTestCase {
         let viewController = UIViewController()
         let secondViewController = UIViewController()
                 
-        factory.stub(question: "Q1", with: viewController)
-        factory.stub(question: "Q2", with: secondViewController)
+        factory.stub(question: Question.singleAnswer("Q1"), with: viewController)
+        factory.stub(question: Question.singleAnswer("Q2"), with: secondViewController)
         
-        sut.routeTo(question: "Q1", answerCallBack: { _ in })
-        sut.routeTo(question: "Q2", answerCallBack: { _ in })
+        sut.routeTo(question: Question.singleAnswer("Q1"), answerCallBack: { _ in })
+        sut.routeTo(question: Question.singleAnswer("Q2"), answerCallBack: { _ in })
         
         // navigationController.viewControllers is only updated after the animation finishes - asynchronous behavior
         // animation will take 0.3 seconds
@@ -40,8 +40,8 @@ class NavigationControllerRouterTest: XCTestCase {
     func test_routeToQuestion_presentsQuestionViewControllerWithRightCallBack() {
         var callBackWasFired = false
         
-        sut.routeTo(question: "Q1", answerCallBack: { _ in callBackWasFired = true })
-        factory.answerCallBack["Q1"]!("Anything")
+        sut.routeTo(question: Question.singleAnswer("Q1"), answerCallBack: { _ in callBackWasFired = true })
+        factory.answerCallBack[Question.singleAnswer("Q1")]!("Anything")
         
         XCTAssertTrue(callBackWasFired)
     }
@@ -55,14 +55,14 @@ class NavigationControllerRouterTest: XCTestCase {
     
     class ViewControllerFactoryStub: ViewControllerFactory {
         
-        private var stubbedQuestions = [String: UIViewController]()
-        var answerCallBack = [String: (String) -> Void]()
+        private var stubbedQuestions = [Question<String>: UIViewController]()
+        var answerCallBack = [Question<String>: (String) -> Void]()
         
-        func stub(question: String, with viewController: UIViewController) {
+        func stub(question: Question<String>, with viewController: UIViewController) {
             stubbedQuestions[question] = viewController
         }
         
-        func questionViewController(for question: String, answerCallBack: @escaping (String) -> Void) -> UIViewController {
+        func questionViewController(for question: Question<String>, answerCallBack: @escaping (String) -> Void) -> UIViewController {
             self.answerCallBack[question] = answerCallBack
             return stubbedQuestions[question] ?? UIViewController()
         }
