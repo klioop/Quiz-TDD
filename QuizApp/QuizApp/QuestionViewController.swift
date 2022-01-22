@@ -16,6 +16,7 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
         label.textAlignment = .center
         return label
     }()
+    
     let tableView = UITableView()
     
     private(set) var question = ""

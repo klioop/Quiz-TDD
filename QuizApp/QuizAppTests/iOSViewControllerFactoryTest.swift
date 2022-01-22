@@ -6,23 +6,35 @@ import XCTest
 @testable import QuizApp
 
 class iOSViewControllerFactoryTest: XCTestCase {
-    
-    func test_questionViewController_createController() {
-        let question = Question.singleAnswer("Q1")
-        let options = ["A1", "A2"]
-        let sut = iOSViewControllerFactory(options: [question: options])
-        let controller = sut.questionViewController(for: Question.singleAnswer("Q1"), answerCallBack: { _ in }) as! QuestionViewController
         
-        XCTAssertEqual(controller.question, "Q1")
+    let options = ["A1", "A2"]
+    
+    func test_questionViewController_singleAnswer_createControllerWithQuestion() {
+        XCTAssertEqual(makeQuestionController(question: "Q1").question, "Q1")
     }
     
-    func test_questionViewController_createControllerWithOptions() {
-        let question = Question.singleAnswer("Q1")
-        let options = ["A1", "A2"]
-        let sut = iOSViewControllerFactory(options: [question: options])
-        let controller = sut.questionViewController(for: Question.singleAnswer("Q1"), answerCallBack: { _ in }) as! QuestionViewController
-        
-        XCTAssertEqual(controller.options, options)
+    func test_questionViewController_sinlgeAnswer_createControllerWithOptions() {
+        XCTAssertEqual(makeQuestionController().options, options)
     }
+    
+    func test_questionViewController_sinlgeAnswer_createControllerWithSingleSelection() {
+        let controller = makeQuestionController()
+        
+        controller.loadViewIfNeeded()
+        
+        XCTAssertFalse(controller.tableView.allowsMultipleSelection)
+    }
+    
+    // MARK: helpers
+    
+    func makeSUT(options: [Question<String>: [String]]) -> iOSViewControllerFactory {
+        return iOSViewControllerFactory(options: options)
+    }
+    
+    func makeQuestionController(question: String = "") -> QuestionViewController {
+        let q = Question.singleAnswer(question)
+        return makeSUT(options: [q: options]).questionViewController(for: q, answerCallBack: { _ in }) as! QuestionViewController
+    }
+
     
 }

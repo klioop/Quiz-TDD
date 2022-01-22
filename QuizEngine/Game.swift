@@ -9,7 +9,7 @@ import Foundation
 
 
 // Only dealing with game state
-public class Game<Question: Hashable, Answer, R: Router> where R.Question == Question, R.Answer == Answer {
+public class Game<Question, Answer, R: Router> where R.Question == Question, R.Answer == Answer {
     let flow: Flow<Question, Answer, R>
     
     init(flow: Flow<Question, Answer, R>) {
