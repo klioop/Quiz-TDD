@@ -5,6 +5,6 @@ import UIKit
 import QuizEngine
 
 protocol ViewControllerFactory {
-    func questionViewController(for question: Question<String>, answerCallBack: @escaping (String) -> Void) -> UIViewController
-    func resultViewController(for result: ResultOfQuiz<Question<String>, String>) -> UIViewController
+    func questionViewController(for question: Question<String>, answerCallBack: @escaping ([String]) -> Void) -> UIViewController
+    func resultViewController(for result: ResultOfQuiz<Question<String>, [String]>) -> UIViewController
 }
