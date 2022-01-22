@@ -1,7 +1,3 @@
-//
-//  NavigationControllerRouter.swift
-//  QuizApp
-//
 //  Created by klioop on 2022/01/19.
 //
 
