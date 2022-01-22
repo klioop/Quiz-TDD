@@ -93,8 +93,6 @@ class NavigationControllerRouterTest: XCTestCase {
         func resultViewController(for result: ResultOfQuiz<Question<String>, String>) -> UIViewController {
             return stubbedResult[result] ?? UIViewController()
         }
-        
-        
     }
 }
 
