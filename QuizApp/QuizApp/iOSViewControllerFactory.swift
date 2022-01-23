@@ -16,6 +16,14 @@ class iOSViewControllerFactory: ViewControllerFactory {
         guard let options = options[question] else {
             fatalError("Could not find options for question: \(question)")
         }
+        return questionViewController(for: question, options: options, answerCallBack: answerCallBack)
+    }
+    
+    func resultViewController(for result: ResultOfQuiz<Question<String>, [String]>) -> UIViewController {
+        return UIViewController()
+    }
+    
+    private func questionViewController(for question: Question<String>, options: [String], answerCallBack: @escaping ([String]) -> Void) -> UIViewController {
         switch question {
         case .singleAnswer(let value):
             return QuestionViewController(question: value, options: options, selection: answerCallBack)
@@ -26,10 +34,5 @@ class iOSViewControllerFactory: ViewControllerFactory {
             return controller
         }
     }
-    
-    func resultViewController(for result: ResultOfQuiz<Question<String>, [String]>) -> UIViewController {
-        return UIViewController()
-    }
-    
     
 }
