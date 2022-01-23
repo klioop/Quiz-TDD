@@ -8,14 +8,11 @@
 import UIKit
 import PinLayout
 
-
 struct PresentableAnswer {
     let question: String
     let answer: String
     var wrongAnswer: String?
 }
-
-
 
 class ResultViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     

@@ -8,7 +8,6 @@
 import UIKit
 import PinLayout
 
-
 class QuestionViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let headerLabel: UILabel = {

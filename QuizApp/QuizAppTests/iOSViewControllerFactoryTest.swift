@@ -51,5 +51,6 @@ class iOSViewControllerFactoryTest: XCTestCase {
         return makeSUT(options: [question: options]).questionViewController(for: question, answerCallBack: { _ in }) as! QuestionViewController
     }
  
+    // Protocol lives in the same module with the implemetation, which does not make sense.
     
 }
