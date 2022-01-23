@@ -6,10 +6,12 @@ import QuizEngine
 
 class iOSViewControllerFactory: ViewControllerFactory {
     
+    let questions: [Question<String>]
     let options: [Question<String>: [String]]
     
-    init(options: [Question<String>: [String]]) {
+    init(questions: [Question<String>], options: [Question<String>: [String]]) {
         self.options = options
+        self.questions = questions
     }
     
     func questionViewController(for question: Question<String>, answerCallBack: @escaping ([String]) -> Void) -> UIViewController {
@@ -26,13 +28,21 @@ class iOSViewControllerFactory: ViewControllerFactory {
     private func questionViewController(for question: Question<String>, options: [String], answerCallBack: @escaping ([String]) -> Void) -> UIViewController {
         switch question {
         case .singleAnswer(let value):
-            return QuestionViewController(question: value, options: options, selection: answerCallBack)
-        case .multipleAnswers(let question):
-            let controller = QuestionViewController(question: question, options: options, selection: answerCallBack)
+            return questionViewController(for: question, value: value, options: options, answerCallBack: answerCallBack)
+        case .multipleAnswers(let value):
+            let controller = questionViewController(for: question, value: value, options: options, answerCallBack: answerCallBack)
             controller.loadView()
             controller.tableView.allowsMultipleSelection = true
             return controller
         }
+    }
+    
+    private func questionViewController(for question: Question<String>, value: String, options: [String], answerCallBack: @escaping ([String]) -> Void) -> QuestionViewController {
+        let presenter = QuestionPresenter(questions: questions, question: question)
+        let controller = QuestionViewController(question: value, options: options, selection: answerCallBack)
+        controller.title = presenter.title
+        
+        return controller
     }
     
 }

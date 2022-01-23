@@ -7,10 +7,17 @@ import XCTest
 
 class iOSViewControllerFactoryTest: XCTestCase {
         
+    let singleQuestion = Question.singleAnswer("Q1")
+    let multipleQuestion = Question.multipleAnswers("Q1")
     let options = ["A1", "A2"]
     
+    func test_questionViewController_singleAnswer_createControllerWithTitle() {
+        let presenter = QuestionPresenter(questions: [singleQuestion, multipleQuestion], question: singleQuestion)
+        XCTAssertEqual(makeQuestionController(question: singleQuestion).title, presenter.title)
+    }
+    
     func test_questionViewController_singleAnswer_createControllerWithQuestion() {
-        XCTAssertEqual(makeQuestionController(question: Question.singleAnswer("Q1")).question, "Q1")
+        XCTAssertEqual(makeQuestionController(question: singleQuestion).question, "Q1")
     }
     
     func test_questionViewController_sinlgeAnswer_createControllerWithOptions() {
@@ -25,16 +32,21 @@ class iOSViewControllerFactoryTest: XCTestCase {
         XCTAssertFalse(controller.tableView.allowsMultipleSelection)
     }
     
-    func test_questionViewController_multipeAnswer_createControllerWithQuestion() {
-        XCTAssertEqual(makeQuestionController(question: Question.singleAnswer("Q1")).question, "Q1")
+    func test_questionViewController_multipeAnswers_createControllerWithTitle() {
+        let presenter = QuestionPresenter(questions: [singleQuestion, multipleQuestion], question: multipleQuestion)
+        XCTAssertEqual(makeQuestionController(question: multipleQuestion).title, presenter.title)
     }
     
-    func test_questionViewController_multipeAnswer_createControllerWithOptions() {
-        XCTAssertEqual(makeQuestionController(question: .multipleAnswers("Q1")).options, options)
+    func test_questionViewController_multipeAnswers_createControllerWithQuestion() {
+        XCTAssertEqual(makeQuestionController(question: singleQuestion).question, "Q1")
+    }
+    
+    func test_questionViewController_multipeAnswers_createControllerWithOptions() {
+        XCTAssertEqual(makeQuestionController(question: multipleQuestion).options, options)
     }
      
-    func test_questionViewController_multipeAnswer_createControllerWithSingleSelection() {
-        let controller = makeQuestionController(question: .multipleAnswers("Q1"))
+    func test_questionViewController_multipeAnswers_createControllerWithSingleSelection() {
+        let controller = makeQuestionController(question: multipleQuestion)
         
         controller.loadViewIfNeeded()
         
@@ -44,7 +56,7 @@ class iOSViewControllerFactoryTest: XCTestCase {
     // MARK: helpers
     
     func makeSUT(options: [Question<String>: [String]]) -> iOSViewControllerFactory {
-        return iOSViewControllerFactory(options: options)
+        return iOSViewControllerFactory(questions: [singleQuestion, multipleQuestion], options: options)
     }
     
     func makeQuestionController(question: Question<String> = Question.singleAnswer("")) -> QuestionViewController {
