@@ -47,6 +47,15 @@ class NavigationControllerRouterTest: XCTestCase {
         XCTAssertTrue(callBackWasFired)
     }
     
+    func test_routeToQuestion_singleAnswer_doesNotConfiguresViewControllerWithSubmitButton() {
+        let viewController = UIViewController()
+        
+        factory.stub(question: Question.singleAnswer("Q1"), with: viewController)
+        sut.routeTo(question: Question.singleAnswer("Q1"), answerCallBack: { _ in })
+        
+        XCTAssertNil(viewController.navigationItem.rightBarButtonItem)
+    }
+    
     func test_routeToQuestion_multipleAnswer_answerCallback_doesNotProgressToNextQuestion() {
         var callBackWasFired = false
         
@@ -90,7 +99,7 @@ class NavigationControllerRouterTest: XCTestCase {
         factory.answerCallBack[Question.multipleAnswers("Q1")]!(["Anything"])
         let button = viewController.navigationItem.rightBarButtonItem!
         
-        button.target!.perform(button.action!, on: .main, with: nil, waitUntilDone: true)
+        button.siumlateTap()
         
         XCTAssertTrue(callBackWasFired)
     }
@@ -152,5 +161,12 @@ extension ResultOfQuiz: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(score)
+    }
+}
+
+private extension UIBarButtonItem {
+    
+    func siumlateTap() {
+        target!.perform(action!, on: .main, with: nil, waitUntilDone: true)
     }
 }
