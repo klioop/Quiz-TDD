@@ -20,8 +20,10 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private(set) var question = ""
     private(set) var options = [String]()
+    private(set) var allowsMultipleSelection: Bool = false
     private var selection: (([String]) -> Void)? = nil
     private let reuseIdentifier = "cell"
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +35,7 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
         
         tableView.tableHeaderView = headerLabel
         tableView.rowHeight = 44
+        tableView.allowsMultipleSelection = allowsMultipleSelection
     }
     
     override func viewDidLayoutSubviews() {
@@ -44,11 +47,13 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
     convenience init(
         question: String,
         options: [String],
+        allowsMultipleSelection: Bool,
         selection: @escaping ([String]) -> Void
     ) {
         self.init()
         self.question = question
         self.options = options
+        self.allowsMultipleSelection = allowsMultipleSelection
         self.selection = selection
     }
     
