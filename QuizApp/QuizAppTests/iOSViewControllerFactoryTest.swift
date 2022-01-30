@@ -47,27 +47,15 @@ class iOSViewControllerFactoryTest: XCTestCase {
     }
     
     func test_resultViewController_createResultViewController_withSummary() {
-        let questions = [singleQuestion, multipleQuestion]
-        let userAnswers = [singleQuestion: ["A1"], multipleQuestion: ["A1", "A3"]]
-        let correctAnswers = [singleQuestion: ["A1"], multipleQuestion: ["A1", "A3"]]
-        let result = ResultOfQuiz(answers: userAnswers, score: 2)
-        let sut = makeSUT(correctAnswers: correctAnswers)
-        let presenter = ResultPresenter(result: result, questions: questions, correctAnswers: correctAnswers)
-        let controller = sut.resultViewController(for: result) as? ResultViewController
+        let tuple = makeControllerAndPresenter()
         
-        XCTAssertEqual(controller!.summary, presenter.summary)
+        XCTAssertEqual(tuple.controller!.summary, tuple.presenter.summary)
     }
     
     func test_resultViewController_createResultViewController_withPresentableAnswers() {
-        let questions = [singleQuestion, multipleQuestion]
-        let userAnswers = [singleQuestion: ["A1"], multipleQuestion: ["A1", "A3"]]
-        let correctAnswers = [singleQuestion: ["A1"], multipleQuestion: ["A1", "A3"]]
-        let result = ResultOfQuiz(answers: userAnswers, score: 2)
-        let sut = makeSUT(correctAnswers: correctAnswers)
-        let presenter = ResultPresenter(result: result, questions: questions, correctAnswers: correctAnswers)
-        let controller = sut.resultViewController(for: result) as? ResultViewController
+        let tuple = makeControllerAndPresenter()
         
-        XCTAssertEqual(controller!.answers.count, presenter.presentableAnswers.count)
+        XCTAssertEqual(tuple.controller!.answers.count, tuple.presenter.presentableAnswers.count)
     }
     
     // MARK: helpers
@@ -78,6 +66,18 @@ class iOSViewControllerFactoryTest: XCTestCase {
     
     func makeQuestionController(question: Question<String> = Question.singleAnswer("")) -> QuestionViewController {
         return makeSUT(options: [question: options]).questionViewController(for: question, answerCallBack: { _ in }) as! QuestionViewController
+    }
+    
+    func makeControllerAndPresenter() -> (controller: ResultViewController?, presenter: ResultPresenter) {
+        let questions = [singleQuestion, multipleQuestion]
+        let userAnswers = [singleQuestion: ["A1"], multipleQuestion: ["A1", "A3"]]
+        let correctAnswers = [singleQuestion: ["A1"], multipleQuestion: ["A1", "A3"]]
+        let result = ResultOfQuiz(answers: userAnswers, score: 2)
+        let sut = makeSUT(correctAnswers: correctAnswers)
+        let presenter = ResultPresenter(result: result, questions: questions, correctAnswers: correctAnswers)
+        let controller = sut.resultViewController(for: result) as? ResultViewController
+        
+        return (controller, presenter)
     }
  
     // Protocol lives in the same module with the implemetation, which does not make sense.
