@@ -23,8 +23,8 @@ class ResultViewController: UIViewController, UITableViewDataSource, UITableView
     }()
     let tableView = UITableView()
     
-    private var summary = ""
-    private var answers = [PresentableAnswer]()
+    private(set) var summary = ""
+    private(set) var answers = [PresentableAnswer]()
     
     override func viewDidLoad() {
         super.viewDidLoad()

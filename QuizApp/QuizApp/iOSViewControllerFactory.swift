@@ -8,10 +8,12 @@ class iOSViewControllerFactory: ViewControllerFactory {
     
     let questions: [Question<String>]
     let options: [Question<String>: [String]]
+    let correctAnswers: [Question<String>: [String]]
     
-    init(questions: [Question<String>], options: [Question<String>: [String]]) {
+    init(questions: [Question<String>], options: [Question<String>: [String]], correctAnswers: [Question<String>: [String]]) {
         self.options = options
         self.questions = questions
+        self.correctAnswers = correctAnswers
     }
     
     func questionViewController(for question: Question<String>, answerCallBack: @escaping ([String]) -> Void) -> UIViewController {
@@ -22,7 +24,8 @@ class iOSViewControllerFactory: ViewControllerFactory {
     }
     
     func resultViewController(for result: ResultOfQuiz<Question<String>, [String]>) -> UIViewController {
-        return UIViewController()
+        let presenter = ResultPresenter(result: result, questions: questions, correctAnswers: correctAnswers)
+        return ResultViewController(summary: presenter.summary, answers: presenter.presentableAnswers)
     }
     
     private func questionViewController(for question: Question<String>, options: [String], answerCallBack: @escaping ([String]) -> Void) -> UIViewController {
